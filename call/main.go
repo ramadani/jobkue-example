@@ -11,7 +11,7 @@ import (
 func main() {
 	log.Println("Calling http")
 
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= 100; i++ {
 		body, err := json.Marshal(map[string]int{
 			"id": i,
 		})
