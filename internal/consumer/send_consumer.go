@@ -32,10 +32,14 @@ func (j *sendConsumer) Worker() {
 	}
 }
 
-func (j *sendConsumer) Queue(phone, body string) {
-	j.jobChan <- sendJob{
-		phone: phone,
-		body:  body,
+func (j *sendConsumer) Queue(phone, body string) bool {
+	input := sendJob{phone: phone, body: body}
+
+	select {
+	case j.jobChan <- input:
+		return true
+	default:
+		return false
 	}
 }
 
@@ -48,7 +52,7 @@ func (j *sendConsumer) Result() (string, error) {
 func NewSendConsumer(msg domain.Message) domain.SendConsumer {
 	return &sendConsumer{
 		msg:     msg,
-		jobChan: make(chan sendJob, 100),
-		resChan: make(chan sendResult, 100),
+		jobChan: make(chan sendJob, 1000),
+		resChan: make(chan sendResult, 1000),
 	}
 }

@@ -45,7 +45,10 @@ func (h *handler) Send(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id, err := h.msg.Send(req.Phone, req.Body)
-	if err != nil {
+	if err != nil && err == domain.OverCapsErr {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

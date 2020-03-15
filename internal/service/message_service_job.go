@@ -1,13 +1,17 @@
 package service
 
-import "ramadani.id/jobkue/internal/domain"
+import (
+	"ramadani.id/jobkue/internal/domain"
+)
 
 type messageServiceJob struct {
 	sendConsumer domain.SendConsumer
 }
 
 func (s *messageServiceJob) Send(phone, body string) (string, error) {
-	s.sendConsumer.Queue(phone, body)
+	if next := s.sendConsumer.Queue(phone, body); !next {
+		return "", domain.OverCapsErr
+	}
 
 	return s.sendConsumer.Result()
 }
