@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	vegeta "github.com/tsenart/vegeta/lib"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +19,7 @@ func main() {
 }
 
 func attack() {
+	start := time.Now()
 	rate := vegeta.Rate{Freq: 300, Per: time.Second}
 	duration := 5 * time.Second
 
@@ -48,6 +50,10 @@ func attack() {
 	metrics.Close()
 
 	getMetric(metrics)
+
+	end := time.Now()
+	dif := end.Sub(start)
+	log.Println("total duration", dif)
 }
 
 func getMetric(metrics vegeta.Metrics) {

@@ -1,4 +1,4 @@
-module github.com/ramadani/jobkue-example
+module ramadani.id/jobkue
 
 go 1.13
 
