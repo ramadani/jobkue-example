@@ -15,7 +15,7 @@ type sendResult struct {
 }
 
 type SendConsumer struct {
-	Service domain.Message
+	service domain.Message
 	jobChan chan sendJob
 	resChan chan sendResult
 }
@@ -23,7 +23,7 @@ type SendConsumer struct {
 func (j *SendConsumer) Worker() {
 	for job := range j.jobChan {
 		log.Println("doing", job.phone)
-		id, err := j.Service.Send(job.phone, job.body)
+		id, err := j.service.Send(job.phone, job.body)
 		j.resChan <- sendResult{
 			id:  id,
 			err: err,
@@ -51,7 +51,7 @@ func (j *SendConsumer) Result() (string, error) {
 
 func NewSendConsumerWorker(msg domain.Message) *SendConsumer {
 	return &SendConsumer{
-		Service: msg,
+		service: msg,
 		jobChan: make(chan sendJob, 1000),
 		resChan: make(chan sendResult, 1000),
 	}
