@@ -23,9 +23,9 @@ type req struct {
 
 func (j *job) Do(res chan<- string) {
 	log.Println("doing", j.id)
-	dur := 100
+	dur := 5
 	if j.id%4 == 0 {
-		dur = 300
+		dur = 12
 	}
 
 	time.Sleep(time.Duration(dur) * time.Millisecond)
@@ -34,8 +34,8 @@ func (j *job) Do(res chan<- string) {
 }
 
 func main() {
-	pool := make(chan Job, 10)
-	result := make(chan string, 10)
+	pool := make(chan Job, 100)
+	result := make(chan string, 100)
 
 	go worker(pool, result)
 
