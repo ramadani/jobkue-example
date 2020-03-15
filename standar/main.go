@@ -119,9 +119,9 @@ func main() {
 
 func worker(jobChan <-chan Job, resChan chan<- Result) {
 	for job := range jobChan {
-		fmt.Println("worker", job.Key, "started job", job.ID)
+		fmt.Println("worker", job.Key, "started consumer", job.ID)
 		time.Sleep(50 * time.Millisecond)
-		fmt.Println("worker", job.Key, "finished job", job.ID)
+		fmt.Println("worker", job.Key, "finished consumer", job.ID)
 		resChan <- Result{ID: job.ID, Key: job.Key}
 	}
 }

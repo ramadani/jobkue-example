@@ -9,7 +9,8 @@ import (
 )
 
 type Job interface {
-	Do(chan<- string)
+	ID() int
+	Do() string
 }
 
 type job struct {
@@ -21,16 +22,18 @@ type req struct {
 	ID int `json:"id"`
 }
 
-func (j *job) Do(res chan<- string) {
-	log.Println("doing", j.id)
+func (j *job) ID() int {
+	return j.id
+}
+
+func (j *job) Do() string {
 	dur := 5
 	if j.id%4 == 0 {
 		dur = 12
 	}
 
 	time.Sleep(time.Duration(dur) * time.Millisecond)
-	res <- fmt.Sprintf("result %d", j.id)
-	log.Println("done", j.id)
+	return fmt.Sprintf("result %d", j.id)
 }
 
 func main() {
@@ -46,7 +49,10 @@ func main() {
 
 func worker(jobChan <-chan Job, resChan chan<- string) {
 	for job := range jobChan {
-		job.Do(resChan)
+		log.Println("doing", job.ID())
+		res := job.Do()
+		resChan <- res
+		log.Println("done", job.ID())
 	}
 }
 
@@ -59,12 +65,10 @@ func wrapper(jobChan chan<- Job, resChan <-chan string) http.HandlerFunc {
 			return
 		}
 
-		go func() {
-			jobChan <- &job{
-				id: req.ID,
-				tm: time.Now(),
-			}
-		}()
+		jobChan <- &job{
+			id: req.ID,
+			tm: time.Now(),
+		}
 
 		resId := <-resChan
 

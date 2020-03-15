@@ -6,20 +6,22 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func main() {
 	log.Println("Calling http")
 
-	for i := 1; i <= 100; i++ {
-		body, err := json.Marshal(map[string]int{
-			"id": i,
+	for i := 1; i <= 500; i++ {
+		body, err := json.Marshal(map[string]interface{}{
+			"phone": strconv.Itoa(i),
+			"body":  "lorem ipsum",
 		})
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		resp, err := http.Post("http://localhost:7000/endpoint", "application/json", bytes.NewBuffer(body))
+		resp, err := http.Post("http://localhost:5000/send", "application/json", bytes.NewBuffer(body))
 		if err != nil {
 			log.Fatal(err)
 		}

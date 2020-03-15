@@ -11,7 +11,8 @@ import (
 )
 
 type req struct {
-	ID int `json:"id"`
+	Phone string `json:"phone"`
+	Body  string `json:"body"`
 }
 
 func main() {
@@ -27,14 +28,17 @@ func attack() {
 	for i := 0; i < 300; i++ {
 		header := make(http.Header)
 		header.Set("Content-Type", "application/json")
+		msisdn := fmt.Sprintf("%04d", i+1)
+		content := fmt.Sprintf("Body from %s", msisdn)
 		data := &req{
-			i + 1,
+			Phone: msisdn,
+			Body:  content,
 		}
 		body, _ := json.Marshal(data)
 
 		targets = append(targets, vegeta.Target{
 			Method: "POST",
-			URL:    "http://localhost:7000/endpoint",
+			URL:    "http://localhost:5000/send",
 			Header: header,
 			Body:   body,
 		})
