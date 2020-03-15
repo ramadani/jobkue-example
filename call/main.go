@@ -12,7 +12,7 @@ import (
 func main() {
 	log.Println("Calling http")
 
-	for i := 1; i <= 500; i++ {
+	for i := 1; i <= 200; i++ {
 		body, err := json.Marshal(map[string]interface{}{
 			"phone": strconv.Itoa(i),
 			"body":  "lorem ipsum",

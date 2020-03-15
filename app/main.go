@@ -24,10 +24,15 @@ type handler struct {
 
 func main() {
 	msg := service.NewMessageService()
-	sendConsumer := consumer.NewSendConsumer(msg)
-	msg = service.NewMessageServiceJob(sendConsumer)
+	sendConsWorker := consumer.NewSendConsumerWorker(msg)
+	msg = service.NewMessageServiceJob(sendConsWorker)
+	workers := []domain.Worker{
+		sendConsWorker,
+	}
 
-	go sendConsumer.Worker()
+	for _, worker := range workers {
+		go worker.Worker()
+	}
 
 	h := &handler{msg}
 

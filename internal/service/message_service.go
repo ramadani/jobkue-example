@@ -12,9 +12,9 @@ func (s *messageService) Send(phone, body string) (string, error) {
 	id := phone
 	lastStr := phone[len(phone)-1:]
 	last, _ := strconv.Atoi(lastStr)
-	dur := time.Duration(1)
+	dur := time.Duration(100)
 	if last%4 == 0 {
-		dur = time.Duration(3)
+		dur = time.Duration(300)
 	}
 
 	time.Sleep(dur * time.Millisecond)
